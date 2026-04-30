@@ -1,0 +1,106 @@
+{
+  "name": "multi-repo-manager",
+  "displayName": "Multi-Repo Manager",
+  "description": "Manage multiple Git repositories in your workspace with one-click branch switching, batch commit, and batch pull/push/fetch",
+  "version": "0.1.0",
+  "publisher": "chuck-studio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aiyogg/multi-repo-manager"
+  },
+  "bugs": {
+    "url": "https://github.com/aiyogg/multi-repo-manager/issues"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "SCM",
+    "Other"
+  ],
+  "keywords": [
+    "git",
+    "multi-repo",
+    "monorepo",
+    "batch",
+    "pull",
+    "push",
+    "branch",
+    "workspace"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "icon": "icon_small.png",
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "multiRepo.switchBranch",
+        "title": "Multi-Repo: Switch Branch (All Repos)"
+      },
+      {
+        "command": "multiRepo.batchCommit",
+        "title": "Multi-Repo: Batch Commit"
+      },
+      {
+        "command": "multiRepo.batchPull",
+        "title": "Multi-Repo: Pull All"
+      },
+      {
+        "command": "multiRepo.batchPush",
+        "title": "Multi-Repo: Push All"
+      },
+      {
+        "command": "multiRepo.batchFetch",
+        "title": "Multi-Repo: Fetch All"
+      },
+      {
+        "command": "multiRepo.showStatus",
+        "title": "Multi-Repo: Show Repo Status"
+      },
+      {
+        "command": "multiRepo.refreshRepos",
+        "title": "Multi-Repo: Refresh Repos"
+      },
+      {
+        "command": "multiRepo.showLog",
+        "title": "Multi-Repo: Show Log"
+      }
+    ],
+    "views": {
+      "scm": [
+        {
+          "id": "multiRepo.reposView",
+          "name": "Multi-Repo Manager",
+          "when": "multiRepo.hasRepos"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "multiRepo.reposView",
+        "contents": "No Git repositories detected in the current workspace.\n[Refresh](command:multiRepo.refreshRepos)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "multiRepo.showLog",
+          "when": "false"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}
