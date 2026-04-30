@@ -1,4 +1,4 @@
-<p align="center"><img src="./icon.png" alt="Multi-Repo Manager Logo" width="200" /></p>
+<p align="center"><img src="https://github.com/aiyogg/multi-repo-manager/raw/main/icon.png" alt="Multi-Repo Manager Logo" width="200" /></p>
 
 # Multi-Repo Manager
 
