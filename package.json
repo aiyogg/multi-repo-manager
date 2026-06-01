@@ -2,7 +2,7 @@
   "name": "multi-repo-manager",
   "displayName": "Multi-Repo Manager",
   "description": "Manage multiple Git repositories in your workspace with one-click branch switching, batch commit, and batch pull/push/fetch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "chuck-studio",
   "repository": {
     "type": "git",

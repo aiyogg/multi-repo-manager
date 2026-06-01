@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { RepoDetector } from '../repoDetector';
-import { getLocalBranches, switchBranch } from '../gitRunner';
+import { getLocalBranches, getRemoteBranches, switchBranch } from '../gitRunner';
 import { logInfo } from '../logger';
 
 export async function switchBranchCommand(detector: RepoDetector): Promise<void> {
@@ -10,34 +10,44 @@ export async function switchBranchCommand(detector: RepoDetector): Promise<void>
     return;
   }
 
-  // Get all unique branches across repos
-  const allBranches: string[] = [];
+  const localBranchSet = new Set<string>();
+  const remoteBranchSet = new Set<string>();
+
   for (const repo of repos) {
     try {
-      const branches = await getLocalBranches(repo.rootUri.fsPath, repo.name);
-      for (const b of branches) {
-        if (!allBranches.includes(b)) {
-          allBranches.push(b);
-        }
-      }
-    } catch (e) {
-      // ignore errors here
-    }
+      const local = await getLocalBranches(repo.rootUri.fsPath, repo.name);
+      local.forEach(b => localBranchSet.add(b));
+    } catch { /* ignore */ }
+
+    try {
+      const remote = await getRemoteBranches(repo.rootUri.fsPath, repo.name);
+      remote.forEach(b => remoteBranchSet.add(b));
+    } catch { /* ignore */ }
   }
 
-  if (allBranches.length === 0) {
+  if (localBranchSet.size === 0 && remoteBranchSet.size === 0) {
     vscode.window.showWarningMessage('No branches found.');
     return;
   }
 
-  // QuickPick for branch selection
-  const selected = await vscode.window.showQuickPick(
-    allBranches.map(b => ({ label: b })),
-    {
-      placeHolder: 'Select branch to switch all repos to',
-      ignoreFocusOut: true,
+  const items: vscode.QuickPickItem[] = [];
+
+  // 本地分支优先展示
+  for (const b of [...localBranchSet].sort()) {
+    items.push({ label: b });
+  }
+
+  // 远端独有分支追加，标注 remote
+  for (const b of [...remoteBranchSet].sort()) {
+    if (!localBranchSet.has(b)) {
+      items.push({ label: b, description: 'remote' });
     }
-  );
+  }
+
+  const selected = await vscode.window.showQuickPick(items, {
+    placeHolder: 'Select branch to switch all repos to',
+    ignoreFocusOut: true,
+  });
 
   if (!selected) {
     return;

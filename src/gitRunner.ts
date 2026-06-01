@@ -55,6 +55,19 @@ export async function getLocalBranches(cwd: string, repoName: string = ''): Prom
     .filter(line => line.length > 0);
 }
 
+export async function getRemoteBranches(cwd: string, repoName: string = ''): Promise<string[]> {
+  try {
+    const output = await executeGit(cwd, ['branch', '-r'], repoName);
+    return output
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0 && !line.includes('->'))
+      .map(line => line.replace(/^origin\//, ''));
+  } catch {
+    return [];
+  }
+}
+
 export async function switchBranch(cwd: string, branch: string, repoName: string = ''): Promise<GitResult> {
   return executeGitSafe(cwd, ['checkout', branch], repoName);
 }
